@@ -1,2 +1,2 @@
-# distrava-backend
-Back-end da aplicação Distrava
+# Distrava - Back-end
+Trabalho de conclusão de curso da FATEC - Análise e Desenvolvimento de Sistemas
