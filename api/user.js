@@ -25,5 +25,19 @@ module.exports = app => {
         })
     }
 
-    return { save }
+    const updateUser = (req, res) => {
+        app.db('users')
+            .where({ id: req.user.id })
+            .update({
+                name: req.body.name,
+                city: req.body.city,
+                state: req.body.state,
+                email: req.body.email,
+                whatsapp: req.body.whatsapp,
+            })
+            .then(_ => res.status(204).send())
+            .catch(err => res.status(400).json(err));
+    }
+
+    return { save, updateUser }
 }

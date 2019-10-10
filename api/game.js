@@ -11,20 +11,12 @@ module.exports = app => {
 
     const getMainCardsGames = (req, res) => {
         
-        // app.db('games')
-        //     .join('rejected')
-        //     .where(
-        //         'user_id', '<>', req.user.id,
-        //         'user_id', '<>', req.user.id,
-        //         )
-        //     .then(games => res.json(games))
-        //     .catch(err => res.status(400).json(err))
-
-        app.db.select('*').from('games').join('rejected', function () {
-            this.on('games.user_id', '<>', req.user.id)
-                // .andOn('rejected.game_id', '<>', 'games.id')
-                // .andOn('wanted.game_id', '=', 'games.id')
-        })
+        app.db('games')
+            .whereNotIn('id', function () {
+                this.select('game_id').from('rejected');
+            })
+            .andWhere('user_id', '<>', req.user.id,)
+            .limit(2)
             .then(games => res.json(games))
             .catch(err => res.status(400).json(err))
     }
@@ -163,6 +155,15 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const updateStatusExchange = (req, res) => {
+        app.db('exchanges')
+            .where({ user_id_a: req.user.id, user_id_b: req.body.id })
+            .orWhere({ user_id_a: req.body.id, user_id_b: req.user.id })
+            .update({ status: req.body.status })
+            .then(_ => res.status(204).send())
+            .catch(err => res.status(400).json(err));
+    }
 
-    return { getMainCardsGames, getUserGames, saveGame, wantedGame, rejectedGame, deleteGame }
+
+    return { getMainCardsGames, getUserGames, saveGame, wantedGame, rejectedGame, deleteGame, updateStatusExchange }
 }
