@@ -8,6 +8,7 @@ exports.up = function(knex) {
         table.integer('rating_box').notNull();
         table.integer('rating_media').notNull();
         table.integer('rating_manual').notNull();
+        table.integer('status').notNull().defaultTo(0);
         table.integer('user_id')
             .references('id')
             .inTable('users')
@@ -18,5 +19,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-    return knex.schema.dropTable('games')  
+    return knex.schema.dropTable('games')
 };

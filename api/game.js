@@ -15,8 +15,9 @@ module.exports = app => {
             .whereNotIn('id', function () {
                 this.select('game_id').from('rejected');
             })
-            .andWhere('user_id', '<>', req.user.id,)
-            .limit(2)
+            .andWhere('user_id', '<>', req.user.id)
+            .andWhere('status', '=', 0)
+            .limit(10)
             .then(games => res.json(games))
             .catch(err => res.status(400).json(err))
     }
@@ -80,26 +81,16 @@ module.exports = app => {
                 .then(rowsDeleted => {
                     if (rowsDeleted > 0) {
 
-                        // insere jogo na tabela rejected para o usuario logado
-                        // esse jogo nao deve mais ser listado para esse usuario
-                        app.db('rejected')
-                            .insert(
-                                {
-                                    user_id: idUserLogged,    // usuario logado
-                                    game_id: idGameWanted,    // jogo que usuario logado quer
-                                }
-                            )
+                        // atualiza status do jogo para 1 = em troca para o usuario logado
+                        app.db('games')
+                            .where({ id: idGameWanted })
+                            .update({ status: 1 })
                             .catch(err => res.status(400).json(err))
                         
-                        // insere jogo na tabela rejected para o usuario dono do jogo
-                        // esse jogo nao deve mais ser listado para esse usuario
-                        app.db('rejected')
-                            .insert(
-                                {
-                                    user_id: idUserGameOwner, // usuario dono do jogo que voce quer
-                                    game_id: idGameUserLogged.game_id,// jogo do usuario logado
-                                }
-                            )
+                        // atualiza status do jogo para 1 = em troca para o outro usuario
+                        app.db('games')
+                            .where({ id: idGameUserLogged.game_id })
+                            .update({ status: 1 })
                             .catch(err => res.status(400).json(err))
                         
                         exchangesGames(req, res, idUserLogged, idGameWanted, idUserGameOwner, idGameUserLogged.game_id)
@@ -157,13 +148,23 @@ module.exports = app => {
 
     const updateStatusExchange = (req, res) => {
         app.db('exchanges')
-            .where({ user_id_a: req.user.id, user_id_b: req.body.id })
-            .orWhere({ user_id_a: req.body.id, user_id_b: req.user.id })
+            .where({ id: req.body.id_exchange })
             .update({ status: req.body.status })
             .then(_ => res.status(204).send())
             .catch(err => res.status(400).json(err));
-    }
 
+        // atualiza status do jogo para 2 se o status da troca for positiva ou 0 se for negativa, assim voltando o jogo para lista de jogos
+        app.db('games')
+            .where({ id: req.body.id_game_a })
+            .update({ status: req.body.status === 1 ? 2 : 0 })
+            .catch(err => res.status(400).json(err))
+
+        // atualiza status do jogo para 2 se o status da troca for positiva ou 0 se for negativa, assim voltando o jogo para lista de jogos
+        app.db('games')
+            .where({ id: req.body.id_game_b })
+            .update({ status: req.body.status === 1 ? 2 : 0 })
+            .catch(err => res.status(400).json(err))
+    }
 
     return { getMainCardsGames, getUserGames, saveGame, wantedGame, rejectedGame, deleteGame, updateStatusExchange }
 }

@@ -13,9 +13,10 @@ consign()
 
 app.db = db;
 
-app.get('/', (req, res) => {
-    res.status(200).send('Meu Backend');
-})
+
+// app.get('/', (req, res) => {
+//     res.status(200).send('Meu Backend');
+// })
 
 app.listen(3000, () =>{
      console.log('Backend foi');
