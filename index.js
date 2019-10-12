@@ -12,6 +12,7 @@ consign()
     .into(app)
 
 app.db = db;
+app.use(express.static('public/upload'));
 
 
 // app.get('/', (req, res) => {

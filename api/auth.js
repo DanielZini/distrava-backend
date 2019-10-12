@@ -4,12 +4,15 @@ const bcrypt = require('bcrypt-nodejs');
 
 module.exports = app => {
     const signin = async (req, res) => {
-        if(!req.body.email || !req.body.password) {
+
+        let email = req.body.email.trim().toLowerCase();
+
+        if(!email || !req.body.password) {
             return res.status(400).send("Dados inválidos");
         }
 
         const user = await app.db('users')
-            .where({ email: req.body.email})
+            .where({ email: email})
             .first()
 
         if(user) {
