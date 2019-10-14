@@ -1,4 +1,4 @@
-const { authSecret } = require('../.env');
+// const { authSecret } = require('../.env');
 const jwt = require('jwt-simple');
 const bcrypt = require('bcrypt-nodejs');
 
@@ -31,7 +31,7 @@ module.exports = app => {
                     state: user.state,
                     whatsapp: user.whatsapp,
                     email: user.email,
-                    token: jwt.encode(payload, authSecret),
+                    token: jwt.encode(payload, process.env.authSecret),
                 })
             }) 
         } else {
