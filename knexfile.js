@@ -1,8 +1,8 @@
 // Update with your config settings.
 // const env = require('./.env');
+require('dotenv/config');
 
 module.exports = {
-
 
 	client: 'postgresql',
 	connection: {
