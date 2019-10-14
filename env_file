@@ -2,4 +2,7 @@
 
 module.exports = {
     authSecret: ''
+    DATABASE_URL: '',
+    DATABASE_USER: '',
+    DATABASE_PASSWORD: '',
 }
