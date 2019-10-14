@@ -6,9 +6,10 @@ module.exports = {
 
 	client: 'postgresql',
 	connection: {
-		database: env.DATABASE_URL,
-		user:     env.DATABASE_USER,
-		password: env.DATABASE_PASSWORD
+		host: 		env.DATABASE_URL,
+		database:	env.DATABASE_NAME,
+		user:    	env.DATABASE_USER,
+		password:	env.DATABASE_PASSWORD
 	},
 	pool: {
 		min: 2,
