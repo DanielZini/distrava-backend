@@ -55,6 +55,5 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-
     return { saveGame, deleteGame, getMainCardsGames, getUserGames  }
 }
