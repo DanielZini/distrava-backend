@@ -14,10 +14,9 @@ consign()
 app.db = db;
 app.use(express.static('public/upload'));
 
-
-// app.get('/', (req, res) => {
-//     res.status(200).send('Meu Backend');
-// })
+app.get('/', (req, res) => {
+    res.status(200).send('Meu Backend');
+})
 
 app.listen(process.env.PORT || 3000, () =>{
      console.log('Backend foi');
