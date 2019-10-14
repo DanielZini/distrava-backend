@@ -19,6 +19,6 @@ app.use(express.static('public/upload'));
 //     res.status(200).send('Meu Backend');
 // })
 
-app.listen(3000, () =>{
+app.listen(process.env.PORT || 3000, () =>{
      console.log('Backend foi');
 })
