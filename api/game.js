@@ -42,15 +42,59 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    const getMainCardsGames = (req, res) => {
-        
-        app.db('games')
-            .whereNotIn('id', function () {
-                this.select('game_id').from('rejected');
-            })
-            .andWhere('user_id', '<>', req.user.id)
-            .andWhere('status', '=', 0)
-            .limit(10)
+    function getRejectedGames(user_id) {
+        var dataArr = [];
+        return app.db.select('game_id')
+            .from('rejected')
+            .then(function (result) {
+                result.forEach(function (value) {
+                    dataArr.push(value.game_id)
+                });
+                return dataArr;
+            });
+    }
+
+    function getWantedGames(user_id) {
+        var dataArr = [];
+        return app.db.select('game_id')
+            .from('wanted')
+            .then(function (result) {
+                result.forEach(function (value) {
+                    dataArr.push(value.game_id)
+                });
+                return dataArr;
+            });
+    }
+
+    const getMainCardsGames = async (req, res) => {
+
+        let arr_rejected = await getRejectedGames(req.user.id);
+        let arr_wanted = await getWantedGames(req.user.id);
+
+        arr_wanted.forEach(el => {
+            arr_rejected.push(el)
+        });
+            
+        app.db.select(
+            'games.id',
+            'games.name',
+            'games.photo',
+            'games.platform',
+            'games.platform',
+            'games.rating_box',
+            'games.rating_media',
+            'games.rating_manual',
+            'games.status',
+            'games.user_id',
+            'users.city',
+            'users.state',
+            )
+            .from('games')
+            .join('users', 'users.id', '=', 'games.user_id')
+            .whereNotIn('games.id', arr_rejected)
+            .andWhere('games.user_id', '<>', req.user.id)
+            .andWhere('games.status', '=', 0)
+            .limit(3)
             .then(games => res.json(games))
             .catch(err => res.status(400).json(err))
     }
