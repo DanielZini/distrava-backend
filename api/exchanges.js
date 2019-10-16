@@ -73,7 +73,47 @@ module.exports = app => {
                     game_id_b: idGameWanted,     // jogo do usuario logado
                 }
             )
-            .then(_ => res.status(204).send())
+            .returning('id')
+            .then(async function (id) {
+
+                const rowInserted = await app.db.select('*').from('exchanges').whereIn('id', id);
+                
+                const listExchanges = [];
+
+                for (const [idx, el] of rowInserted.entries()) {
+
+                    let ownerGameId = '', wantedGameId = '';
+
+                    // define qual jogo é do usuario logado e qual o usuario quer
+                    if (el.user_id_a === req.user.id) {
+                        ownerGameId = el.game_id_a;
+                        wantedGameId = el.game_id_b;
+                    } else {
+                        ownerGameId = el.game_id_b;
+                        wantedGameId = el.game_id_a;
+                    }
+
+                    // resgata jogo do usuario
+                    let ownerGame = await app.db('games')
+                        .where({ id: ownerGameId })
+                        .first()
+                        .catch(err => res.status(400).json(err));
+
+                    // resgata jogo que ele quer
+                    let wantedGame = await app.db('games')
+                        .where({ id: wantedGameId })
+                        .first()
+                        .catch(err => res.status(400).json(err));
+
+                    await listExchanges.push({
+                        ownerGamePhoto: ownerGame.photo,
+                        wantedGamePhoto: wantedGame.photo,
+                    });
+
+                };
+
+                res.json(listExchanges);
+            })
             .catch(err => res.status(400).json(err))
     }
 
