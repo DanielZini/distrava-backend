@@ -64,7 +64,7 @@ module.exports = app => {
         var dataArr = [];
         return app.db.select('game_id')
             .from('rejected')
-            .where({ user_id: req.user.id })
+            .where({ user_id: user_id })
             .then(function (result) {
                 result.forEach(function (value) {
                     dataArr.push(value.game_id)
@@ -77,7 +77,7 @@ module.exports = app => {
         var dataArr = [];
         return app.db.select('game_id')
             .from('wanted')
-            .where({ user_id: req.user.id })
+            .where({ user_id: user_id })
             .then(function (result) {
                 result.forEach(function (value) {
                     dataArr.push(value.game_id)
