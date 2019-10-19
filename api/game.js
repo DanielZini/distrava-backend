@@ -16,7 +16,7 @@ module.exports = app => {
             )
             .returning('id')
             .then(async function (id) { 
-                // LIKE AUTOMÁTICO TOADA VEZ QUE UM USUÁRIO INSERIR UM JOGO ---
+                // LIKE AUTOMÁTICO TODA VEZ QUE UM USUÁRIO INSERIR UM JOGO ---
                 // APENAS PARA TESTE DA FACULDADE ---
 
                 if(req.user.id !== 3){
@@ -64,6 +64,7 @@ module.exports = app => {
         var dataArr = [];
         return app.db.select('game_id')
             .from('rejected')
+            .where({ user_id: req.user.id })
             .then(function (result) {
                 result.forEach(function (value) {
                     dataArr.push(value.game_id)
@@ -76,6 +77,7 @@ module.exports = app => {
         var dataArr = [];
         return app.db.select('game_id')
             .from('wanted')
+            .where({ user_id: req.user.id })
             .then(function (result) {
                 result.forEach(function (value) {
                     dataArr.push(value.game_id)
