@@ -36,6 +36,21 @@ module.exports = app => {
         })
     }
 
+    const deleteUser = (req, res) => {
+        app.db('users')
+            .where({ id: req.user.id })
+            .del()
+            .then(rowsDeleted => {
+                if (rowsDeleted > 0) {
+                    res.status(204).send();
+                } else {
+                    const msg = `Não foi encontrado esse usuário`
+                    res.status(400).send(msg);
+                }
+            })
+            .catch(err => res.status(400).json(err));
+    }
+
     const updateUser = async (req, res) => {
 
         // valida se campos nao estão vazios ---
@@ -109,5 +124,5 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
-    return { save, updateUser, getLoggedUser }
+    return { save, updateUser, getLoggedUser, deleteUser }
 }

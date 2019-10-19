@@ -15,6 +15,10 @@ module.exports = app => {
         .all(app.config.passport.authenticate())
         .get(app.api.user.getLoggedUser);
 
+    app.route('/delete-user')
+        .all(app.config.passport.authenticate())
+        .delete(app.api.user.deleteUser);
+
     // Game ----
     app.route('/save-game')
         .all(app.config.passport.authenticate())
