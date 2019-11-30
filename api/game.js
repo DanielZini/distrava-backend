@@ -15,23 +15,6 @@ module.exports = app => {
                 }
             )
             .returning('id')
-            .then(async function (id) { 
-                // LIKE AUTOMÁTICO TODA VEZ QUE UM USUÁRIO INSERIR UM JOGO ---
-                // APENAS PARA TESTE DA FACULDADE ---
-
-                if(req.user.id !== 3){
-                    
-                    await app.db('wanted')
-                        .insert(
-                            {
-                                user_id: 3,
-                                game_id: id[0]
-                            }
-                        )
-                        .catch(err => res.status(400).json('NAO FOI'));
-                }
-
-            })
             .then(_ => res.status(204).send())
             .catch(err => res.status(400).json(err))
     }
