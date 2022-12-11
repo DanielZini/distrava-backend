@@ -16,7 +16,7 @@
     "consign": "0.1.6",
     "cors": "2.8.5",
     "dotenv": "^8.1.0",
-    "express": "4.17.1",
+    "express": "4.17.3",
     "jwt-simple": "0.5.6",
     "knex": "0.19.4",
     "multer": "1.4.2",
